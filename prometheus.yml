@@ -18,3 +18,8 @@ scrape_configs:
     sample_limit: 0
     static_configs:
       - targets: ['kong:8001']
+
+# Update the targets based on your setup
+  # ensure the targets' host and port match the locations where Prometheus and Kong's Admin API are running
+
+# You can validate the modified prometheus.yml file using promtool or a similar tool to ensure its correctness and restart Prometheus with the updated configuration
