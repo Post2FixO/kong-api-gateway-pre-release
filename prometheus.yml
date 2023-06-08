@@ -1,5 +1,5 @@
 global:
-  scrape_interval: 20s       # How frequently Prometheus scrapes targets for metrics
+  scrape_interval: 20s      # How frequently Prometheus scrapes targets for metrics
   evaluation_interval: 20s  # How frequently Prometheus evaluates rules
 
 scrape_configs:
