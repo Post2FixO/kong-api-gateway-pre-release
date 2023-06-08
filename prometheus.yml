@@ -1,23 +1,24 @@
 global:
-  scrape_interval: 20s
-  evaluation_interval: 20s
+  scrape_interval: 20s       # How frequently Prometheus scrapes targets for metrics
+  evaluation_interval: 20s  # How frequently Prometheus evaluates rules
 
 scrape_configs:
-  - job_name: 'prometheus' 
-    metrics_path: /metrics
-    honor_labels: false
-    honor_timestamps: true
-    sample_limit: 0
+  - job_name: 'prometheus'  # Name of the scrape job for Prometheus metrics
+    metrics_path: /metrics  # Path where Prometheus metrics are exposed
+    honor_labels: false     # Whether to honor labels attached to the metrics
+    honor_timestamps: true  # Whether to honor timestamps associated with the metrics
+    sample_limit: 0         # Maximum number of samples to scrape (0 means unlimited)
     static_configs:
-      - targets: ['localhost:9090']
+      - targets: ['localhost:9090']  # Targets to scrape Prometheus metrics from
   
-  - job_name: 'kong'
-    metrics_path: /metrics
-    honor_labels: true
-    honor_timestamps: true
-    sample_limit: 0
+  - job_name: 'kong'        # Name of the scrape job for Kong metrics
+    metrics_path: /metrics  # Path where Kong metrics are exposed
+    honor_labels: true      # Whether to honor labels attached to the metrics
+    honor_timestamps: true  # Whether to honor timestamps associated with the metrics
+    sample_limit: 0         # Maximum number of samples to scrape (0 means unlimited)
     static_configs:
-      - targets: ['kong:8001']
+      - targets: ['kong:8001']      # Targets to scrape Kong metrics from
+
 
 # Update the targets based on your setup
   # ensure the targets' host and port match the locations where Prometheus and Kong's Admin API are running
