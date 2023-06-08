@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3' # take latest version of docker-compose
 
 networks:
   api-gateway-network:  # Custom network name for API gateway services
@@ -11,7 +11,7 @@ volumes:
 
 services:
   kong-db:
-    image: postgres:11-alpine
+    image: postgres:latest
     volumes:
       - kong-datastore:/var/lib/postgresql/data  # Mount volume for Kong database
     networks:
@@ -70,7 +70,7 @@ services:
       NODE_ENV: development
 
   keycloak-db:
-    image: postgres:14-alpine
+    image: postgres:latest
     volumes:
       - keycloak-datastore:/var/lib/postgresql/data  # Mount volume for Keycloak database
     networks:
