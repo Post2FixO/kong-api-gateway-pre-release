@@ -1,129 +1,133 @@
 version: '3.4'
 
 networks:
- kong-net:
-   driver: bridge
- keycloak-net:
+  api-gateway-network:  # Custom network name for API gateway services
+    driver: bridge
+  keycloak-network:  # Custom network name for Keycloak services
 
 volumes:
- kong-datastore:
- keycloak-datastore:
+  kong-datastore:  # Volume for Kong database
+  keycloak-datastore:  # Volume for Keycloak database
 
 services:
- kong-db:
-   image: postgres:11-alpine
-   volumes:
-     - kong-datastore:/var/lib/postgresql/data
-   networks:
-     - kong-net
-   ports:
-     - "15432:5432"
-   environment:
-     POSTGRES_DB:       api-gw
-     POSTGRES_USER:     demouser
-     POSTGRES_PASSWORD: demouser
+  kong-db:
+    image: postgres:11-alpine
+    volumes:
+      - kong-datastore:/var/lib/postgresql/data  # Mount volume for Kong database
+    networks:
+      - api-gateway-network
+    ports:
+      - "15432:5432"  # Expose port for Kong database
+    environment:
+      POSTGRES_DB: api-gw
+      POSTGRES_USER: demouser
+      POSTGRES_PASSWORD: demouser
 
- kong:
-   build:
-     context: ./     
-   image: kong-oidc:latest
-   depends_on:
-     - kong-db
-   networks:
-     - kong-net
-   ports:
-     - "8000:8000" # Listener
-     - "8001:8001" # Admin API
-     - "8443:8443" # Listener  (SSL)
-     - "8444:8444" # Admin API (SSL)
-   environment:
-     KONG_DATABASE:         postgres
-     KONG_PG_HOST:          kong-db
-     KONG_PG_PORT:          5432
-     KONG_PG_DATABASE:      api-gw
-     KONG_PG_USER:          demouser
-     KONG_PG_PASSWORD:      demouser
-     KONG_PROXY_ACCESS_LOG: /dev/stdout
-     KONG_ADMIN_ACCESS_LOG: /dev/stdout
-     KONG_PROXY_ERROR_LOG:  /dev/stderr
-     KONG_ADMIN_ERROR_LOG:  /dev/stderr
-     KONG_PROXY_LISTEN:     0.0.0.0:8000, 0.0.0.0:8443 ssl
-     KONG_ADMIN_LISTEN:     0.0.0.0:8001, 0.0.0.0:8444 ssl
-     KONG_PLUGINS:          bundled,oidc
-     KONG_LOG_LEVEL:        debug
+  kong:
+    build:
+      context: ./  # Build the Kong image using the current directory as the build context
+    image: kong-oidc:latest
+    depends_on:
+      - kong-db  # Wait for the Kong database service to be ready
+    networks:
+      - api-gateway-network
+    ports:
+      - "8000:8000"  # Listener
+      - "8001:8001"  # Admin API
+      - "8443:8443"  # Listener (SSL)
+      - "8444:8444"  # Admin API (SSL)
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-db
+      KONG_PG_PORT: 5432
+      KONG_PG_DATABASE: api-gw
+      KONG_PG_USER: demouser
+      KONG_PG_PASSWORD: demouser
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_PROXY_LISTEN: 0.0.0.0:8000, 0.0.0.0:8443 ssl
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001, 0.0.0.0:8444 ssl
+      KONG_PLUGINS: bundled,oidc
+      KONG_LOG_LEVEL: debug
 
- konga:
-   image: pantsel/konga:0.14.9
-   depends_on:
-     - kong
-   networks:
-     - kong-net
-   ports:
-     - "1337:1337" # konga
-   environment:
-     DB_ADAPTER: postgres
-     DB_HOST: kong-db
-     DB_PORT: '5432'
-     DB_USER: demouser
-     DB_PASSWORD: demouser
-     DB_DATABASE: api-gw
-     NODE_ENV: development
+  konga:
+    image: pantsel/konga:0.14.9
+    depends_on:
+      - kong  # Wait for the Kong service to be ready
+    networks:
+      - api-gateway-network
+    ports:
+      - "1337:1337"  # Konga
+    environment:
+      DB_ADAPTER: postgres
+      DB_HOST: kong-db
+      DB_PORT: '5432'
+      DB_USER: demouser
+      DB_PASSWORD: demouser
+      DB_DATABASE: api-gw
+      NODE_ENV: development
 
- keycloak-db:
-   image: postgres:14-alpine
-   volumes:
-     - keycloak-datastore:/var/lib/postgresql/data
-   networks:
-     - keycloak-net
-   ports:
-     - "25432:5432"
-   environment:
-     POSTGRES_DB:       keycloak
-     POSTGRES_USER:     demouser
-     POSTGRES_PASSWORD: demouser
+  keycloak-db:
+    image: postgres:14-alpine
+    volumes:
+      - keycloak-datastore:/var/lib/postgresql/data  # Mount volume for Keycloak database
+    networks:
+      - keycloak-network
+    ports:
+      - "25432:5432"  # Expose port for Keycloak database
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: demouser
+      POSTGRES_PASSWORD: demouser
 
- keycloak:
-   image: quay.io/keycloak/keycloak:latest
-   depends_on:
-     - keycloak-db
-   command: start-dev
-   networks:
-     - keycloak-net
-   ports:
-     - "8180:8080"
-   environment:
-     DB_VENDOR:   POSTGRES
-     DB_ADDR:     keycloak-db
-     DB_PORT:     5432
-     DB_DATABASE: keycloak
-     DB_USER:     keycloak
-     DB_PASSWORD: password
-     KEYCLOAK_ADMIN: demouser
-     KEYCLOAK_ADMIN_PASSWORD: demouser
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    depends_on:
+      - keycloak-db  # Wait for the Keycloak database service to be ready
+    command: start-dev
+    networks:
+      - keycloak-network
+    ports:
+      - "8180:8080"  # Expose Keycloak service port
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: keycloak-db
+      DB_PORT: 5432
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: password
+      KEYCLOAK_ADMIN: demouser
+      KEYCLOAK_ADMIN_PASSWORD: demouser
 
- prometheus:
-   image: prom/prometheus
-   depends_on:
-     - kong
-   container_name: prometheus
-   networks:
-     - kong-net
-   restart: always
-   volumes:
-     - ./prometheus.yml:/etc/prometheus/prometheus.yml
-   command: "--config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/prometheus"
-   ports:
-     - 9090:9090
+  prometheus:
+    image: prom/prometheus
+    depends_on:
+      - kong  # Wait for the Kong service to be ready
+    container_name: prometheus
+    networks:
+      - api-gateway-network
+    restart: always
+    volumes:
+      - /path/to/prometheus.yml:/etc/prometheus/prometheus.yml  # Absolute path to prometheus.yml (replace with actual path)
+    command: "--config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/prometheus"
+    ports:
+      - 9090:9090  # Expose Prometheus service port
 
- grafana:
-   image: grafana/grafana
-   depends_on:
-     - prometheus
-   container_name: grafana
-   networks:
-     - kong-net
-   restart: always
-   volumes:
-     - ./grafana/provisioning/:/etc/grafana/provisioning
-   ports:
-     - 3000:3000
+  grafana:
+    image: grafana/grafana
+    depends_on:
+      - prometheus  # Wait for the Prometheus service to be ready
+    container_name: grafana
+    networks:
+      - api-gateway-network
+    restart: always
+    volumes:
+      - /path/to/grafana/provisioning/:/etc/grafana/provisioning  # Absolute path to Grafana provisioning directory (replace with actual path)
+    ports:
+      - 3000:3000  # Expose Grafana service port
+
+# Replace /path/to/prometheus.yml and /path/to/grafana/provisioning/ with absolute paths to prometheus.yml file and to Grafana provisioning directory
+
+# Validate modified docker-compose.yml file using docker-compose config to test the deployment to verify that services start up properly
