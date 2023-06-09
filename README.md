@@ -4,25 +4,9 @@
 
 This repo provides a working, Dockerized, open source API Gateway stack, based on Kong. It strives to lower barriers to deplying this configuration by providing a deployable, complete and maintainable stack.
 
-### The purpose of API Gateways
+### What are API Gateways for
 
 When API calls to multiple micro-services pass through an API Gateway, it's easier to streamline API security, monitoring, rate limiting, access controls, response caching and more. It's impractical to implement and maintain these capabilities seperately for individual micro-services. An API Gateway lets developers of services focus on building clean and secure services instead of being bogged down by maintaining a web of duplicate software.
-
-### What's working
-- IAM enabled (using the Kong & Keycloak integration)
-    - SSO
-        - Login to web app with KeyCloak
-        - Genrating an API token using SSO credentials
-        - Refreshing the API token
-    - Token
-        - Generate a token
-        - Store the token as a session cookie
-    Authorization
-        - Allow users to call specific APIs (still complicated to do)
-        - Instantly revoke a token when a user is deactivated in KeyCloak
-- A Django app
-    - An extra repo provides a Django demo app (frontend & backend) based on the audited Mozilla OIDC Django repo
-    - It maybe a good starting point for building your own application
 
 ## Deplying the stack
 
@@ -232,3 +216,33 @@ http://{host}:8180/realms/{realm}/protocol/openid-connect/userinfo
 Note: The instructions provided assume a Linux-based host machine. Adjust the commands accordingly if using a different operating system.
 
 Feel free to contribute and provide feedback to improve this project further. Contributions are very welcome!
+    
+# Repo status
+    
+## What's working
+- IAM enabled (using the Kong & Keycloak integration)
+    - SSO
+        - Login to web app with KeyCloak
+        - Genrating an API token using SSO credentials
+        - Refreshing the API token
+    - Token
+        - Generate a token
+        - Store the token as a session cookie
+    Authorization
+        - Allow users to call specific APIs (still complicated to do)
+        - Instantly revoke a token when a user is deactivated in KeyCloak
+- A Django app
+    - An extra repo provides a Django demo app (frontend & backend) based on the audited Mozilla OIDC Django repo
+    - It maybe a good starting point for building your own application
+
+
+## Backlog (sorted by priority)
+- Security
+    - Updating versions of core components and dependencies
+    - Imporving the Docker files
+    - Making it easier for devs to set secure default credentials
+- Deployment simplification
+    - The setup involves a Bash start script, the Dockerfile + docker-compose.yml file and multiple manual commands and manual steps. We need to streamline this process to make everything easier to deploy.
+    - Unifi scripts, commands and automate manual steps
+    - Add environment variables in the startup script for main settable parmaters of the stack
+    
