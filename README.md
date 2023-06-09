@@ -2,11 +2,29 @@
 
 ## Introduction
 
-This project aims to decrease the barrier to setting up streamlined, secure, and highly available API endpoints for any configuration, from single applications to distributed microservices.
+This repo provides a working, Dockerized, open source API Gateway stack, based on Kong. It strives to lower barriers to deplying this configuration by providing a deployable, complete and maintainable stack.
 
-Handling API resources for each microservice separately is a recipe for failure. API Gateways can centralize and improve authentication, rate limiting, response caching, monitoring, and much more, leaving our deployed services focused on their functionality. If our services are exclusively accessed through an API Gateway and calling our services doesn't present further vulnerabilities, our services can be considered secure.
+### The purpose of API Gateways
 
-## Getting Started
+When API calls to multiple micro-services pass through an API Gateway, it's easier to streamline API security, monitoring, rate limiting, access controls, response caching and more. It's impractical to implement and maintain these capabilities seperately for individual micro-services. An API Gateway lets developers of services focus on building clean and secure services instead of being bogged down by maintaining a web of duplicate software.
+
+### What's working
+- IAM enabled (using the Kong & Keycloak integration)
+    - SSO
+        - Login to web app with KeyCloak
+        - Genrating an API token using SSO credentials
+        - Refreshing the API token
+    - Token
+        - Generate a token
+        - Store the token as a session cookie
+    Authorization
+        - Allow users to call specific APIs (still complicated to do)
+        - Instantly revoke a token when a user is deactivated in KeyCloak
+- A Django app
+    - An extra repo provides a Django demo app (frontend & backend) based on the audited Mozilla OIDC Django repo
+    - It maybe a good starting point for building your own application
+
+## Deplying the stack
 
 ### Requirements
 
