@@ -18,7 +18,7 @@ When API calls to multiple micro-services pass through an API Gateway, it's easi
 - Konga does not run on Apple Silicone yet. Update if this changes
 - Ensure that none of the ports used in the `docker-compose.yml` file are in use. You can stop containers that occupy ports or update the ports in the script
 
-### Deployment
+### Deployment steps
 
 1. Clone the repository onto the host machine.
 2. Browse to the folder where the repository was cloned.
