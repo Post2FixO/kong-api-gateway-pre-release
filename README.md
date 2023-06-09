@@ -4,7 +4,7 @@
 
 This repo provides a working, Dockerized, open source API Gateway stack, based on Kong. It strives to lower barriers to deplying this configuration by providing a deployable, complete and maintainable stack.
 
-### What are API Gateways for
+### Why use API Gateways
 
 When API calls to multiple micro-services pass through an API Gateway, it's easier to streamline API security, monitoring, rate limiting, access controls, response caching and more. It's impractical to implement and maintain these capabilities seperately for individual micro-services. An API Gateway lets developers of services focus on building clean and secure services instead of being bogged down by maintaining a web of duplicate software.
 
