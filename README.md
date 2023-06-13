@@ -2,7 +2,10 @@
 
 ## Introduction
 
-This repo provides a working, Dockerized, open source API Gateway stack, based on Kong. It strives to lower barriers to deplying this configuration by providing a deployable, complete and maintainable stack.
+This is a barrier lowering 'get the basics working, easily' project. This repo provides a clean Kong based, Dockerized, open source API Gateway stack. Kong is built on the Nginx proxy which might be required in your stack.
+
+- This stack is a 'bare bones' high performance API Gateway suitable for enterprize
+- [Gluu](https://gluu.org/docs/gg/) is another option.  
 
 ### Why use API Gateways
 
