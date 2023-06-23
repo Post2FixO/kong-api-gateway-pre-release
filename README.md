@@ -1,5 +1,7 @@
 # Authenticated API Gateway - Securing Microservices
 
+This repo is temporary and is most likely not working due to a bunch of unbranched changes. A working repo is in the works and should be released soon under the same open source MIT license.
+
 ## Introduction
 
 This is a barrier lowering 'get the basics working, easily' project. This repo provides a clean Kong based, Dockerized, open source API Gateway stack. Kong is built on the Nginx proxy which might be required in your stack.
